@@ -1,6 +1,5 @@
 // import important parts of sequelize library
-const { Model, DataTypes, DECIMAL, INTEGER } = require('sequelize');
-const { INSERT } = require('sequelize/types/lib/query-types');
+const { Model, DataTypes } = require('sequelize');
 // import our database connection from config.js
 const sequelize = require('../config/connection');
 
