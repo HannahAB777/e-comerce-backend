@@ -1,16 +1,16 @@
-const router = require('express').Router();
-const { Product, Category, Tag, ProductTag } = require('../../models');
+const router = require("express").Router();
+const { Product, Category, Tag, ProductTag } = require("../../models");
 
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   // find all products
   Product.findAll({
     include: [
       {
-        model: Product,
-        model: Tag,
+        model: Category,
+        Tag,
       },
     ],
   }).then((products) => {
@@ -20,13 +20,28 @@ router.get('/', (req, res) => {
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
   // find a single product by its `id`
+  Product.findByPk(req.params.id, {
+    include: [
+      {
+        model: Category,
+        ProductTag,
+      },
+    ],
+  }).then((products) => res.json(products));
   // be sure to include its associated Category and Tag data
 });
 
 // create new product
-router.post('/', (req, res) => {
+router.post("/", async (req, res) => {
+  const newProduct = await Product.create({
+    product_name: req.body.product_name,
+    price: req.body.price,
+    stock: req.body.stock,
+    tagIds: req.body.tagIds,
+  });
+  return res.json(newProduct);
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -35,6 +50,7 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
+
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -58,7 +74,7 @@ router.post('/', (req, res) => {
 });
 
 // update product
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // update product data
   Product.update(req.body, {
     where: {
@@ -99,7 +115,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   // delete one product by its `id` value
 });
 
